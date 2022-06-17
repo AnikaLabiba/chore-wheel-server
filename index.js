@@ -17,12 +17,19 @@ async function run() {
     try {
         await client.connect()
         const projectCollection = client.db('projectSynergy').collection('projects')
-
+        // get all projects
         app.get('/projects', async (req, res) => {
             const query = {}
             const cursor = projectCollection.find(query)
             const projects = await cursor.toArray()
             res.send(projects)
+        })
+        //get projects ny id
+        app.get('/project/:id', async (req, res) => {
+            const id = req.params.id
+            const query = { _id: ObjectId(id) }
+            const project = await projectCollection.findOne(query)
+            res.send(project)
         })
     }
     finally {
