@@ -17,6 +17,7 @@ async function run() {
     try {
         await client.connect()
         const projectCollection = client.db('projectSynergy').collection('projects')
+        const userCollection = client.db('projectSynergy').collection('users')
         // get all projects
         app.get('/projects', async (req, res) => {
             const query = {}
@@ -24,13 +25,47 @@ async function run() {
             const projects = await cursor.toArray()
             res.send(projects)
         })
-        //get projects ny id
+        //get projects by id
         app.get('/project/:id', async (req, res) => {
             const id = req.params.id
             const query = { _id: ObjectId(id) }
             const project = await projectCollection.findOne(query)
             res.send(project)
         })
+        //adding new project to the db
+        app.post('/project', async (req, res) => {
+            const newProject = req.body
+            const result = await projectCollection.insertOne(newProject)
+            res.send(result)
+            console.log(result)
+        })
+        // //update user profile
+        app.put('/user/:email', async (req, res) => {
+            const email = req.params.email
+            const filter = { email: email }
+            const user = req.body
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    name: user.name,
+                    email: user.email,
+                    phone: user.phone,
+                    address: user.address,
+                    career: user.career,
+                },
+            };
+            const result = await userCollection.updateOne(filter, updatedDoc, options);
+            res.send(result)
+        })
+
+        //get user by filtering email (my profile)
+        app.get('/user', async (req, res) => {
+            const email = req.query.email
+            const query = { email: email }
+            const user = await userCollection.findOne(query)
+            res.send(user)
+        })
+
     }
     finally {
 
