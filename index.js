@@ -76,7 +76,7 @@ async function run() {
                     title: updatedProject.title,
                     img: updatedProject.img,
                     description: updatedProject.description,
-                    catergory: updatedProject.catergory,
+                    category: updatedProject.category,
                     startDate: updatedProject.startDate,
                     endDates: updatedProject.endDates,
                     note: updatedProject.note,
