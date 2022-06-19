@@ -65,7 +65,28 @@ async function run() {
             const user = await userCollection.findOne(query)
             res.send(user)
         })
+        //updating project
+        app.put('/project/:id', async (req, res) => {
+            const id = req.params.id;
+            const updatedProject = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updatedDoc = {
+                $set: {
+                    title: updatedProject.title,
+                    img: updatedProject.img,
+                    description: updatedProject.description,
+                    catergory: updatedProject.catergory,
+                    startDate: updatedProject.startDate,
+                    endDates: updatedProject.endDates,
+                    note: updatedProject.note,
+                    liveSite: updatedProject.liveSite,
+                }
+            };
+            const result = await projectCollection.updateOne(filter, updatedDoc, options);
+            res.send(result);
 
+        })
     }
     finally {
 
